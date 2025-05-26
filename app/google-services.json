@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "907813343503",
+    "project_id": "wall-social-c6d51",
+    "storage_bucket": "wall-social-c6d51.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907813343503:android:340792c4fe426cd17cae7a",
+        "android_client_info": {
+          "package_name": "com.aditya.wall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907813343503-2sjgo09elcba7g2j1c4a1vrpc37mim4v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aditya.wall",
+            "certificate_hash": "1448b587143134d96c26985e9fe50b58073de278"
+          }
+        },
+        {
+          "client_id": "907813343503-jtoo1irn4b8tnliq94mbq9higt3mfeqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjntL4CCRsS9vDAod2V-Xm2rmOVuuEq6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106537729929918236220",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
