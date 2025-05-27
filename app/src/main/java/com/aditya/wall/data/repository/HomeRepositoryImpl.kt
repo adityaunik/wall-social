@@ -7,6 +7,7 @@ import com.aditya.wall.domain.repository.HomeRepository
 import com.aditya.wall.utils.NetworkResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -18,8 +19,11 @@ class HomeRepositoryImpl @Inject constructor(
     private val fAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ): HomeRepository {
+    private var listenerRegistration: ListenerRegistration? = null
+
     override suspend fun addPost(post: Post): Flow<NetworkResponse<String>> = callbackFlow {
         try {
+            trySend(NetworkResponse.Loading())
             if (post.userId == "" || post.content == "" || post.time == "" || post.userName == "") {
                 Log.w("HomeRepository", "addPost:failure -> invalid post")
                 trySend(NetworkResponse.Failure("Failure"))
@@ -53,9 +57,10 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun getPosts(): Flow<NetworkResponse<List<Post>>> = callbackFlow {
         try {
             trySend(NetworkResponse.Loading())
+            listenerRegistration?.remove()
             val posts: ArrayList<Post> = arrayListOf()
 
-            firestore.collection("posts")
+            listenerRegistration = firestore.collection("posts")
                 .orderBy("time", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .addSnapshotListener{ snap, error ->
                     if (error != null) {
@@ -84,6 +89,7 @@ class HomeRepositoryImpl @Inject constructor(
         }
 
         awaitClose {
+            listenerRegistration?.remove()
             close()
         }
     }
@@ -91,9 +97,10 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun filterPosts(userId: String): Flow<NetworkResponse<List<Post>>> = callbackFlow {
         try {
             trySend(NetworkResponse.Loading())
+            listenerRegistration?.remove()
             val posts: ArrayList<Post> = arrayListOf()
 
-            firestore.collection("posts")
+            listenerRegistration = firestore.collection("posts")
                 .whereEqualTo("userId", userId)
                 .orderBy("time", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .addSnapshotListener{ snap, error ->
@@ -122,7 +129,8 @@ class HomeRepositoryImpl @Inject constructor(
             trySend(NetworkResponse.Failure(e.message.toString()))
         }
 
-        awaitClose {
+        awaitClose{
+            listenerRegistration?.remove()
             close()
         }
     }
